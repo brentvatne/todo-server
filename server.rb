@@ -22,7 +22,6 @@ class TodoRepository
     end
 
     def update(id, todo)
-      binding.pry
       todo['id'] = id
       @todos[id] = todo
     end
