@@ -1,4 +1,46 @@
-// Work goes here!
 $(function() {
-  alert('Loaded correctly!');
+  var $todoNameInput = $('#todoNameInput');
+  var $todosContainer = $('.todo-list');
+
+  // For each of the todos in the array, call
+  // renderTodo with it
+  var renderTodos = function(todos) {
+    $.each(todos, function(i, todo) {
+      renderTodo(todo);
+    });
+  }
+
+  // Given a todo (a JavaScript object that has a name
+  // property) eg: {name: 'Buy groceries'}, add it to
+  // the todo list and animate it in
+  var renderTodo = function(todo) {
+    var $todoEl = $('<li>' + todo.name + '</li>');
+    $todoEl.appendTo($todosContainer);
+    $todoEl.addClass('animated rotateInUpLeft');
+  }
+
+  var createTodo = function(newTodoName) {
+    $.post('/todos', {todo: {name: newTodoName}}, function(createdTodo) {
+      renderTodo(createdTodo);
+   })
+  }
+
+  $('.new-todo-form').submit(function(e) {
+    e.preventDefault();
+    // Get the name of the todo from the input
+    var newTodoName = $todoNameInput.val().trim();
+
+    // Don't do anything if it's blank
+    if (newTodoName === '') {
+      alert('Todo cannot be blank!');
+    } else {
+      createTodo(newTodoName);
+      $todoNameInput.val('');
+    }
+  });
+
+  // Load the todos from the server when the page is loaded
+  $.get('/todos', function(todos) {
+    renderTodos(todos);
+  });
 });

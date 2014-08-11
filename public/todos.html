@@ -3,13 +3,32 @@
   <head>
     <title>Todos!</title>
     <link type="text/css" rel="stylesheet" href="/todos.css" />
+    <link type="text/css" rel="stylesheet" href="http://daneden.github.io/animate.css/animate.min.css" />
+    <link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
   </head>
 
   <body>
-    <h1>Todos!</h1>
-    <!-- work goes here -->
+
+    <div class="container">
+      <div class="well">
+        <h1>Todos!</h1>
+        <form class="new-todo-form form-inline">
+          <div class="form-group">
+            <input type="text"
+                   class="form-control"
+                   style="width: 250px;"
+                   id="todoNameInput"
+                   placeholder="Gimme something to do" />
+            <button class="btn btn-primary">Submit</button>
+          </div>
+        </form>
+      </div>
+      <ul class="todo-list">
+      </ul>
+    </div>
 
     <script src="/jquery.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="/todos.js"></script>
   </body>
 </html>
