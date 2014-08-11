@@ -15,14 +15,36 @@ $(function() {
   // the todo list and animate it in
   var renderTodo = function(todo) {
     var $todoEl = $('<li>' + todo.name + '</li>');
+    $todoEl.addClass('todo-item');
+    $todoEl.data('todo-id', todo.id);
+    var $removeButton = $('<a>x</a>');
+    $removeButton.addClass('todo-remove-button');
+    $todoEl.append($removeButton);
     $todoEl.appendTo($todosContainer);
     $todoEl.addClass('animated rotateInUpLeft');
   }
+
+  $(document).on('click', '.todo-remove-button', function(e) {
+    var $todoToRemove = $(this).parent('.todo-item');
+    var todoId = $todoToRemove.data('todo-id');
+    deleteTodo(todoId);
+    $todoToRemove.remove();
+  });
 
   var createTodo = function(newTodoName) {
     $.post('/todos', {todo: {name: newTodoName}}, function(createdTodo) {
       renderTodo(createdTodo);
    })
+  }
+
+  var deleteTodo = function(id) {
+    $.ajax({
+      url: '/todos/' + id,
+      type: 'delete',
+      success: function() {
+        console.log("Deleted todo: " + id);
+      }
+    })
   }
 
   $('.new-todo-form').submit(function(e) {
