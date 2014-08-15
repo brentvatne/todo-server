@@ -2,13 +2,32 @@ $(function() {
   var $todoNameInput = $('#todoNameInput');
   var $todosContainer = $('.todo-list');
 
-  // setInterval((function() {
-  //   if ($.active == 0) {
-  //     $('.saving-indicator').hide();
-  //   } else {
-  //     $('.saving-indicator').show();
-  //   }
-  // }), 1000);
+  setInterval((function() {
+    // Load the todos from the server when the page is loaded
+    $.get('/todos', function(todos) {
+      var todosOnPage = $('.todo-item').length;
+
+      if (todos.length === todosOnPage) {
+        // Do nothing
+      } else if (todos.length > todosOnPage) {
+        //   0       1       2       3        4       5
+        // [item 1, item 2, item 3, item 4, item 5, item 6]
+        // todos.length = 6
+        // todosOnPage  = 4
+        //
+        // some kind of loop that gives item 5, and then item 6
+        // renderTodo(todo)
+        var startIndex = todosOnPage;
+        for (var i = startIndex; i < todos.length; i++) {
+          renderTodo(todos[i]);
+        }
+      } else if (todos.length < todosOnPage) {
+        // implement this!
+        // find out what id exists on the page that does exist in the todos
+        // array remove the element corresponding to that id
+      }
+    });
+  }), 2000);
 
   $(document).ajaxStart(function() {
     $('.spinner').show();
@@ -27,6 +46,7 @@ $(function() {
   // For each of the todos in the array, call
   // renderTodo with it
   var renderTodos = function(todos) {
+    $todosContainer.empty();
     $.each(todos, function(i, todo) {
       renderTodo(todo);
     });

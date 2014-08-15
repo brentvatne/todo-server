@@ -14,7 +14,7 @@ class TodoRepository
     end
 
     def all
-      @todos.values
+      @todos.values.sort_by { |todo| todo['id'] }
     end
 
     def find(id)
