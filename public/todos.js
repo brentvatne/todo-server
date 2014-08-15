@@ -2,6 +2,28 @@ $(function() {
   var $todoNameInput = $('#todoNameInput');
   var $todosContainer = $('.todo-list');
 
+  // setInterval((function() {
+  //   if ($.active == 0) {
+  //     $('.saving-indicator').hide();
+  //   } else {
+  //     $('.saving-indicator').show();
+  //   }
+  // }), 1000);
+
+  $(document).ajaxStart(function() {
+    $('.spinner').show();
+  });
+
+  $(document).ajaxStop(function() {
+    $('.spinner').hide();
+  });
+
+  $(document).ajaxComplete(function(e, xhr) {
+    if (xhr.statusText == 'error') {
+      $('.ajax-error-warning').show();
+    }
+  });
+
   // For each of the todos in the array, call
   // renderTodo with it
   var renderTodos = function(todos) {
@@ -32,9 +54,10 @@ $(function() {
   });
 
   var createTodo = function(newTodoName) {
-    $.post('/todos', {todo: {name: newTodoName}}, function(createdTodo) {
-      renderTodo(createdTodo);
-   })
+    $.post('/todos', {todo: {name: newTodoName}})
+      .success(function(createdTodo) {
+        renderTodo(createdTodo);
+      })
   }
 
   var deleteTodo = function(id) {

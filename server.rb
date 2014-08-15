@@ -44,6 +44,7 @@ end
 
 # Create
 post '/todos' do
+  sleep 0.5
   json TodoRepository.create(params[:todo])
 end
 
