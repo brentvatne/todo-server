@@ -2,33 +2,6 @@ $(function() {
   var $todoNameInput = $('#todoNameInput');
   var $todosContainer = $('.todo-list');
 
-  setInterval((function() {
-    // Load the todos from the server when the page is loaded
-    $.get('/todos', function(todos) {
-      var todosOnPage = $('.todo-item').length;
-
-      if (todos.length === todosOnPage) {
-        // Do nothing
-      } else if (todos.length > todosOnPage) {
-        //   0       1       2       3        4       5
-        // [item 1, item 2, item 3, item 4, item 5, item 6]
-        // todos.length = 6
-        // todosOnPage  = 4
-        //
-        // some kind of loop that gives item 5, and then item 6
-        // renderTodo(todo)
-        var startIndex = todosOnPage;
-        for (var i = startIndex; i < todos.length; i++) {
-          renderTodo(todos[i]);
-        }
-      } else if (todos.length < todosOnPage) {
-        // implement this!
-        // find out what id exists on the page that does exist in the todos
-        // array remove the element corresponding to that id
-      }
-    });
-  }), 2000);
-
   $(document).ajaxStart(function() {
     $('.spinner').show();
   });
@@ -56,7 +29,16 @@ $(function() {
   // property) eg: {name: 'Buy groceries'}, add it to
   // the todo list and animate it in
   var renderTodo = function(todo) {
-    var $todoEl = $('<li>' + todo.name + '</li>');
+    var $todoEl = $('<li><span>' + todo.name + '</span></li>');
+    var $completeCheckbox = $('<input type="checkbox"></input>');
+
+    if (todo.complete == "true") {
+      $todoEl.addClass('complete');
+      $completeCheckbox.prop('checked', true);
+    }
+
+    $completeCheckbox.addClass('todo-complete-checkbox');
+    $todoEl.prepend($completeCheckbox);
     $todoEl.addClass('todo-item');
     $todoEl.data('todo-id', todo.id);
     var $removeButton = $('<a>x</a>');
@@ -65,6 +47,30 @@ $(function() {
     $todoEl.appendTo($todosContainer);
     $todoEl.addClass('animated rotateInUpLeft');
   }
+
+  $(document).on('click', '.todo-complete-checkbox', function(e) {
+    // Is it checked?
+    var isComplete = $(this).is(':checked');
+    // Find the parent todo-item container
+    var $todoToComplete = $(this).parent('.todo-item');
+    // Using the parent todo-item container, find the id from its data attribute
+    var todoId = $todoToComplete.data('todo-id');
+
+    if (isComplete) {
+      $todoToComplete.addClass('complete');
+    } else {
+      $todoToComplete.removeClass('complete');
+    }
+
+    $.ajax({
+      url: '/todos/' + todoId,
+      type: 'PUT',
+      data: {todo: {complete: isComplete}},
+      success: function(result) {
+        console.log(result)
+      }
+    });
+  });
 
   $(document).on('click', '.todo-remove-button', function(e) {
     var $todoToRemove = $(this).parent('.todo-item');

@@ -21,9 +21,10 @@ class TodoRepository
       @todos[id]
     end
 
-    def update(id, todo)
-      todo['id'] = id
-      @todos[id] = todo
+    def update(id, new_attributes)
+      todo = @todos[id]
+      todo['complete'] = new_attributes['complete']
+      todo
     end
 
     def destroy(id)
@@ -44,7 +45,6 @@ end
 
 # Create
 post '/todos' do
-  sleep 0.5
   json TodoRepository.create(params[:todo])
 end
 
